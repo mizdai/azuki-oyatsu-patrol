@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>�������̂���p�g���[��</title>
+  <title>あずきのおやつパトロール</title>
   <style>
     :root {
       --bg: #fff7ef;
@@ -686,13 +686,13 @@
   </style>
 </head>
 <body>
-  <main id="shell" aria-label="�������̂���p�g���[��">
+  <main id="shell" aria-label="あずきのおやつパトロール">
     <section id="hud">
       <div class="hudBlock">
         <span class="hudLabel">SCORE</span>
         <div class="scoreRow">
           <span id="score" class="hudValue">0</span>
-          <span id="streakBadge">�A�� 0 �I</span>
+          <span id="streakBadge">連続 0 個！</span>
         </div>
       </div>
       <div class="hudBlock">
@@ -704,10 +704,10 @@
     <section id="game">
       <div id="bird" class="hop" aria-hidden="true">
         <div id="birdInner">
-          <div class="spark spark1">�&</div>
-          <div class="spark spark2">�&</div>
-          <div class="spark spark3">�&</div>
-          <div class="spark spark4">�&</div>
+          <div class="spark spark1">｡&</div>
+          <div class="spark spark2">｡&</div>
+          <div class="spark spark3">｡&</div>
+          <div class="spark spark4">｡&</div>
 
           <div class="birdTail"></div>
           <div class="birdBody"></div>
@@ -715,8 +715,8 @@
           <div class="birdCheek"></div>
           <div class="birdEye birdEyeL"></div>
           <div class="birdEye birdEyeR"></div>
-          <div class="painEye painEyeL">�~</div>
-          <div class="painEye painEyeR">�~</div>
+          <div class="painEye painEyeL">×</div>
+          <div class="painEye painEyeR">×</div>
           <div class="painMouth"></div>
           <div class="birdBeak"></div>
           <div class="birdLeg legA"></div>
@@ -726,16 +726,16 @@
 
       <div id="overlay">
         <div class="card">
-          <h1 class="title">��������<br>����p�g���[��</h1>
+          <h1 class="title">あずきの<br>おやつパトロール</h1>
           <p class="desc">
-            �������̂������́A�߂��̐H�ו��֏���Ɍ������Ă����܂��B<br>
-            �����������̂͐H�ׂ����āA�܂������̂̓^�b�v�܂��̓N���b�N�ŏ����Ă��������B�������Ԃ�60�b�ł��B
+            桜文鳥のあずきは、近くの食べ物へ勝手に向かっていきます。<br>
+            おいしいものは食べさせて、まずいものはタップまたはクリックで消してください。制限時間は60秒です。
           </p>
           <div class="legend">
-            <div><strong>������������</strong><br><�S� <�Z� <�=�<br>�H�ׂ�� +100<br>�A���Ń{�[�i�X</div>
-            <div><strong>�܂�������</strong><br><�6�� >��� <�K�<br>�H�ׂ�ƃX�R�A�� -3%<br>������ +1</div>
+            <div><strong>おいしいもの</strong><br><ﾘSﾟ <ﾘZﾟ <ﾘ=ﾟ<br>食べると +100<br>連続でボーナス</div>
+            <div><strong>まずいもの</strong><br><ﾘ6ﾟ︀ >ﾘﾅﾝ <ﾘKﾟ<br>食べるとスコアの -3%<br>消すと +1</div>
           </div>
-          <button id="startBtn">�X�^�[�g</button>
+          <button id="startBtn">スタート</button>
         </div>
       </div>
     </section>
@@ -754,16 +754,16 @@
       const streakBadge = document.getElementById('streakBadge');
 
       const goodFoods = [
-        { icon: '<�S�', name: '������', point: 10 },
-        { icon: '<�Z�', name: '���͂�', point: 10 },
-        { icon: '<�=�', name: '�Ƃ����낱��', point: 10 },
-        { icon: '<�N�', name: '���', point: 10 }
+        { icon: '<ﾘSﾟ', name: 'いちご', point: 10 },
+        { icon: '<ﾘZﾟ', name: 'ごはん', point: 10 },
+        { icon: '<ﾘ=ﾟ', name: 'とうもろこし', point: 10 },
+        { icon: '<ﾘNﾟ', name: 'りんご', point: 10 }
       ];
 
       const badFoods = [
-        { icon: '<�6��', name: '���炢��', point: 0 },
-        { icon: '>���', name: '���܂˂�', point: 0 },
-        { icon: '<�K�', name: '�����ς������', point: 0 }
+        { icon: '<ﾘ6ﾟ︀', name: 'からい実', point: 0 },
+        { icon: '>ﾘﾅﾝ', name: 'たまねぎ', point: 0 },
+        { icon: '<ﾘKﾟ', name: 'すっぱすぎる実', point: 0 }
       ];
 
       const state = {
@@ -972,7 +972,7 @@
       }
 
       function updateStreakBadge(animate = false) {
-        streakBadge.textContent = `�A�� ${state.goodStreak} �I`;
+        streakBadge.textContent = `連続 ${state.goodStreak} 個！`;
         if (animate) {
           streakBadge.classList.remove('popStreak');
           void streakBadge.offsetWidth;
@@ -1117,15 +1117,15 @@
         bird.classList.remove('faceLeft');
         overlay.innerHTML = `
           <div class="card">
-            <h1 class="title">�Q�[���I��</h1>
+            <h1 class="title">ゲーム終了</h1>
             <p class="desc" style="text-align:center; font-size:18px;">
-              �ŏI�X�R�A<br>
+              最終スコア<br>
               <strong style="font-size:48px; color:#e96f92;">${state.score}</strong>
             </p>
             <p class="desc">
-              �����������̂͘A���ŐH�ׂ�ق� +10�A+11�A+12�c �Ɠ��_���L�сA�ő� +20 �_�ł��B�܂������̂�H�ׂ�ƁA���̎��_�̃X�R�A��3%�����_����A�A���{�[�i�X�̓��Z�b�g����܂��B�X�R�A��0�_�����ɂ͂Ȃ�܂���B
+              おいしいものは連続で食べるほど +10、+11、+12… と得点が伸び、最大 +20 点です。まずいものを食べると、その時点のスコアの3%が減点され、連続ボーナスはリセットされます。スコアは0点未満にはなりません。
             </p>
-            <button id="restartBtn">������x</button>
+            <button id="restartBtn">もう一度</button>
           </div>
         `;
         overlay.classList.remove('hidden');
@@ -1143,7 +1143,7 @@
 
         const message = document.createElement('div');
         message.className = 'timeupMessage';
-        message.innerHTML = '<span>�����܂ŁI</span>';
+        message.innerHTML = '<span>そこまで！</span>';
         game.appendChild(message);
 
         window.setTimeout(() => {
