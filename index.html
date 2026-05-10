@@ -203,7 +203,7 @@
 
     .spawnSparkle::before,
     .spawnSparkle::after {
-      content: "&'";
+      content: "✦";
       position: absolute;
       color: #fff7a8;
       text-shadow: 0 0 5px rgba(255, 180, 70, 0.95), 0 1px 0 rgba(90, 58, 46, 0.22);
@@ -283,7 +283,7 @@
     }
 
     .happyHeart::before {
-      content: "e&";
+      content: "♥";
     }
 
     @keyframes sparklePop {
@@ -704,10 +704,10 @@
     <section id="game">
       <div id="bird" class="hop" aria-hidden="true">
         <div id="birdInner">
-          <div class="spark spark1">｡&</div>
-          <div class="spark spark2">｡&</div>
-          <div class="spark spark3">｡&</div>
-          <div class="spark spark4">｡&</div>
+          <div class="spark spark1">⚡</div>
+          <div class="spark spark2">⚡</div>
+          <div class="spark spark3">⚡</div>
+          <div class="spark spark4">⚡</div>
 
           <div class="birdTail"></div>
           <div class="birdBody"></div>
@@ -732,8 +732,8 @@
             おいしいものは食べさせて、まずいものはタップまたはクリックで消してください。制限時間は60秒です。
           </p>
           <div class="legend">
-            <div><strong>おいしいもの</strong><br><ﾘSﾟ <ﾘZﾟ <ﾘ=ﾟ<br>食べると +100<br>連続でボーナス</div>
-            <div><strong>まずいもの</strong><br><ﾘ6ﾟ︀ >ﾘﾅﾝ <ﾘKﾟ<br>食べるとスコアの -3%<br>消すと +1</div>
+            <div><strong>おいしいもの</strong><br>🍓 🍚 🌽<br>食べると +10〜<br>連続でボーナス</div>
+            <div><strong>まずいもの</strong><br>🌶️ 🧅 🍋<br>食べるとスコアの -3%<br>消すと +1</div>
           </div>
           <button id="startBtn">スタート</button>
         </div>
@@ -754,16 +754,16 @@
       const streakBadge = document.getElementById('streakBadge');
 
       const goodFoods = [
-        { icon: '<ﾘSﾟ', name: 'いちご', point: 10 },
-        { icon: '<ﾘZﾟ', name: 'ごはん', point: 10 },
-        { icon: '<ﾘ=ﾟ', name: 'とうもろこし', point: 10 },
-        { icon: '<ﾘNﾟ', name: 'りんご', point: 10 }
+        { icon: '🍓', name: 'いちご', point: 10 },
+        { icon: '🍚', name: 'ごはん', point: 10 },
+        { icon: '🌽', name: 'とうもろこし', point: 10 },
+        { icon: '🍎', name: 'りんご', point: 10 }
       ];
 
       const badFoods = [
-        { icon: '<ﾘ6ﾟ︀', name: 'からい実', point: 0 },
-        { icon: '>ﾘﾅﾝ', name: 'たまねぎ', point: 0 },
-        { icon: '<ﾘKﾟ', name: 'すっぱすぎる実', point: 0 }
+        { icon: '🌶️', name: 'からい実', point: 0 },
+        { icon: '🧅', name: 'たまねぎ', point: 0 },
+        { icon: '🍋', name: 'すっぱすぎる実', point: 0 }
       ];
 
       const state = {
