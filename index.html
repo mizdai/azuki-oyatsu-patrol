@@ -818,7 +818,7 @@
       function chooseFood() {
         const elapsedRate = clamp(state.elapsed / 50, 0, 1);
         const startBadRate = 0.30;
-        const badRate = startBadRate * (1 + elapsedRate);
+        const badRate = startBadRate + 0.30 * elapsedRate;
         const isGood = Math.random() >= badRate;
         const list = isGood ? goodFoods : badFoods;
         const base = list[Math.floor(Math.random() * list.length)];
@@ -1231,6 +1231,8 @@
         console.assert(typeof window.targetEl === 'undefined', 'global targetEl should not be required');
         console.assert(Math.min(15, 10) === 10, 'bonus cap calculation should cap at 10');
         console.assert(clamp(55 / 50, 0, 1) === 1, 'difficulty should cap at 50 seconds');
+        console.assert(0.30 + 0.30 * 0 === 0.30, 'bad food rate should start at 30%');
+        console.assert(0.30 + 0.30 * 1 === 0.60, 'bad food rate should cap at 60%');
         console.assert(1.008 > 1, 'base spawn interval should be 10% faster than the previous 1.12 setting');
         console.assert(Math.abs((1 / 1.12) - 0.8928571428571428) < 0.000001, 'max spawn frequency should cap at 1.12x start speed');
         const originalGameH = state.gameH;
