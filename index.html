@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Ç†Ç∏Ç´ÇÃÇ®Ç‚Ç¬ÉpÉgÉçÅ[Éã</title>
+  <style>
+    :root {
+      --bg: #fff7ef;
+      --panel: #fffdf8;
+      --ink: #3b2b25;
+      --accent: #e96f92;
+      --good: #40a66b;
+      --bad: #c85050;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: radial-gradient(circle at top, #fffaf5 0%, var(--bg) 58%, #f5dfd0 100%);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      touch-action: none;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+    }
+
+    #shell {
+      width: min(100vw, calc(100vh * 9 / 16));
+      height: min(100vh, calc(100vw * 16 / 9));
+      max-width: 540px;
+      max-height: 960px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #hud {
+      height: 72px;
+      border: 3px solid #5a3a2e;
+      border-radius: 18px;
+      background: linear-gradient(#fffdf8, #ffeeda);
+      box-shadow: 0 6px 0 rgba(90, 58, 46, 0.18);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      font-weight: 800;
+    }
+
+    .hudBlock {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.05;
+      min-width: 0;
+    }
+
+    .hudLabel {
+      font-size: 12px;
+      opacity: 0.65;
+      letter-spacing: 0.05em;
+    }
+
+    .hudValue {
+      font-size: clamp(24px, 7vw, 34px);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .scoreRow {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    #streakBadge {
+      display: inline-block;
+      flex: 0 0 auto;
+      padding: 6px 10px;
+      border: 2px solid #5a3a2e;
+      border-radius: 999px;
+      background: rgba(255, 253, 248, 0.92);
+      color: #e96f92;
+      font-size: clamp(14px, 3.8vw, 18px);
+      font-weight: 1000;
+      line-height: 1;
+      transform: translateY(1px);
+      box-shadow: 0 2px 0 rgba(90, 58, 46, 0.14);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    #streakBadge.popStreak {
+      animation: streakPop 360ms ease-out both;
+    }
+
+    @keyframes streakPop {
+      0% { scale: 1; }
+      35% { scale: 1.22; }
+      100% { scale: 1; }
+    }
+
+    #game {
+      position: relative;
+      flex: 1;
+      overflow: hidden;
+      border: 3px solid #5a3a2e;
+      border-radius: 24px;
+      background:
+        radial-gradient(ellipse at 20% 7%, rgba(255, 255, 255, 0.78) 0 4.2%, transparent 4.8%),
+        radial-gradient(ellipse at 78% 8%, rgba(255, 255, 255, 0.48) 0 3.0%, transparent 3.5%),
+        linear-gradient(180deg, #d7f3ff 0%, #eaf8ff 15%, #d8efbf 16%, #bae186 100%);
+      box-shadow: 0 8px 0 rgba(90, 58, 46, 0.18), inset 0 0 0 5px rgba(255,255,255,0.25);
+    }
+
+    #game::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.22;
+      background:
+        radial-gradient(ellipse at 12% 78%, rgba(98, 145, 72, 0.22) 0 10%, transparent 11%),
+        radial-gradient(ellipse at 24% 86%, rgba(98, 145, 72, 0.18) 0 8%, transparent 9%),
+        radial-gradient(ellipse at 38% 80%, rgba(98, 145, 72, 0.20) 0 11%, transparent 12%),
+        radial-gradient(ellipse at 51% 88%, rgba(98, 145, 72, 0.16) 0 9%, transparent 10%),
+        radial-gradient(ellipse at 66% 79%, rgba(98, 145, 72, 0.18) 0 10%, transparent 11%),
+        radial-gradient(ellipse at 79% 87%, rgba(98, 145, 72, 0.16) 0 8%, transparent 9%),
+        radial-gradient(ellipse at 90% 81%, rgba(98, 145, 72, 0.18) 0 10%, transparent 11%),
+        radial-gradient(ellipse at 18% 72%, rgba(118, 156, 83, 0.18) 0 1.1%, transparent 1.3%),
+        radial-gradient(ellipse at 33% 76%, rgba(118, 156, 83, 0.14) 0 1.0%, transparent 1.2%),
+        radial-gradient(ellipse at 57% 73%, rgba(118, 156, 83, 0.15) 0 1.1%, transparent 1.3%),
+        radial-gradient(ellipse at 73% 75%, rgba(118, 156, 83, 0.13) 0 0.95%, transparent 1.15%),
+        radial-gradient(ellipse at 84% 70%, rgba(118, 156, 83, 0.16) 0 1.0%, transparent 1.2%);
+    }
+
+    #game::after {
+      content: "";
+      position: absolute;
+      left: -10%;
+      right: -10%;
+      bottom: -5%;
+      height: 34%;
+      pointer-events: none;
+      opacity: 0.18;
+      background:
+        radial-gradient(ellipse at 20% 100%, rgba(91, 150, 68, 0.26) 0 28%, transparent 29%),
+        radial-gradient(ellipse at 65% 96%, rgba(91, 150, 68, 0.22) 0 22%, transparent 23%);
+    }
+
+    .food {
+      position: absolute;
+      width: 38px;
+      height: 38px;
+      transform: translate(-50%, -50%);
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      cursor: pointer;
+      filter: drop-shadow(0 3px 0 rgba(70, 45, 35, 0.16));
+      transition: transform 120ms ease, opacity 120ms ease;
+      z-index: 3;
+    }
+
+    .food:hover {
+      transform: translate(-50%, -50%) scale(1.12);
+    }
+
+    .food.pop {
+      transform: translate(-50%, -50%) scale(1.45) rotate(12deg);
+      opacity: 0;
+    }
+
+    .effect {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .spawnSparkle {
+      width: 64px;
+      height: 64px;
+      z-index: 4;
+      animation: sparklePop 520ms ease-out forwards;
+    }
+
+    .spawnSparkle::before,
+    .spawnSparkle::after {
+      content: "&'";
+      position: absolute;
+      color: #fff7a8;
+      text-shadow: 0 0 5px rgba(255, 180, 70, 0.95), 0 1px 0 rgba(90, 58, 46, 0.22);
+      font-weight: 900;
+    }
+
+    .spawnSparkle::before {
+      left: 5px;
+      top: 3px;
+      font-size: 26px;
+      animation: sparkleDriftA 520ms ease-out forwards;
+    }
+
+    .spawnSparkle::after {
+      right: 3px;
+      bottom: 5px;
+      font-size: 20px;
+      animation: sparkleDriftB 520ms ease-out forwards;
+    }
+
+    .eatPoof {
+      width: 46px;
+      height: 46px;
+      z-index: 4;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 40%, rgba(255,255,255,0.95) 0 10%, transparent 11%),
+        radial-gradient(circle at 62% 35%, rgba(255,244,220,0.92) 0 13%, transparent 14%),
+        radial-gradient(circle at 52% 66%, rgba(255,218,188,0.78) 0 16%, transparent 17%);
+      filter: drop-shadow(0 2px 0 rgba(90, 58, 46, 0.12));
+      animation: poofVanish 520ms ease-out forwards;
+    }
+
+    .bashEffect {
+      width: 42px;
+      height: 42px;
+      z-index: 4;
+      animation: bashBurstFade 300ms ease-out forwards;
+    }
+
+    .bashEffect i {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 4px;
+      height: 14px;
+      margin-left: -2px;
+      margin-top: -7px;
+      border-radius: 999px;
+      background: rgba(45, 45, 45, 0.96);
+      transform-origin: 50% 50%;
+      animation: bashLineBurst 300ms ease-out forwards;
+    }
+
+    .bashEffect i:nth-child(1) { --angle: 0deg; }
+    .bashEffect i:nth-child(2) { --angle: 36deg; }
+    .bashEffect i:nth-child(3) { --angle: 72deg; }
+    .bashEffect i:nth-child(4) { --angle: 108deg; }
+    .bashEffect i:nth-child(5) { --angle: 144deg; }
+    .bashEffect i:nth-child(6) { --angle: 180deg; }
+    .bashEffect i:nth-child(7) { --angle: 216deg; }
+    .bashEffect i:nth-child(8) { --angle: 252deg; }
+    .bashEffect i:nth-child(9) { --angle: 288deg; }
+    .bashEffect i:nth-child(10) { --angle: 324deg; }
+
+    .happyHeart {
+      width: 34px;
+      height: 34px;
+      z-index: 12;
+      display: grid;
+      place-items: center;
+      color: #ff5f98;
+      font-size: 30px;
+      font-weight: 900;
+      text-shadow: 0 2px 0 rgba(255,255,255,0.9), 0 0 7px rgba(255,120,170,0.65);
+      animation: heartFloat 860ms ease-out forwards;
+    }
+
+    .happyHeart::before {
+      content: "e&";
+    }
+
+    @keyframes sparklePop {
+      0% { opacity: 0; scale: 0.45; rotate: -12deg; }
+      35% { opacity: 1; scale: 1.05; rotate: 5deg; }
+      100% { opacity: 0; scale: 1.28; rotate: 12deg; }
+    }
+
+    @keyframes sparkleDriftA {
+      from { translate: 0 0; }
+      to { translate: -8px -10px; }
+    }
+
+    @keyframes sparkleDriftB {
+      from { translate: 0 0; }
+      to { translate: 8px 9px; }
+    }
+
+    @keyframes poofVanish {
+      0% { opacity: 0; scale: 0.55; }
+      25% { opacity: 0.95; scale: 1.05; }
+      100% { opacity: 0; scale: 1.65; }
+    }
+
+    @keyframes bashLineBurst {
+      0% {
+        opacity: 0;
+        scale: 0.65;
+        transform: rotate(var(--angle)) translateY(-4px);
+      }
+      35% {
+        opacity: 1;
+        scale: 1;
+        transform: rotate(var(--angle)) translateY(-10px);
+      }
+      100% {
+        opacity: 0;
+        scale: 0.9;
+        transform: rotate(var(--angle)) translateY(-19px);
+      }
+    }
+
+    @keyframes bashBurstFade {
+      0% { opacity: 0; scale: 0.78; }
+      35% { opacity: 1; scale: 1; }
+      100% { opacity: 0; scale: 1.08; }
+    }
+
+    @keyframes heartFloat {
+      0% { opacity: 0; scale: 0.5; translate: 0 0; }
+      22% { opacity: 1; scale: 1.12; translate: 0 -8px; }
+      100% { opacity: 0; scale: 1.35; translate: 0 -58px; }
+    }
+
+    #bird {
+      position: absolute;
+      width: 58px;
+      height: 58px;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+      pointer-events: none;
+      filter: drop-shadow(0 5px 0 rgba(70, 45, 35, 0.15));
+    }
+
+    #birdInner {
+      position: absolute;
+      inset: 0;
+      transform-origin: 50% 85%;
+    }
+
+    .birdBody {
+      position: absolute;
+      left: 10px;
+      top: 13px;
+      width: 38px;
+      height: 34px;
+      border: 3px solid #2b2624;
+      border-radius: 50% 50% 44% 44%;
+      background: linear-gradient(180deg, #f7d1d8 0%, #f4bbc7 48%, #ffffff 49%, #fff 100%);
+    }
+
+    .birdHead {
+      position: absolute;
+      left: 14px;
+      top: 4px;
+      width: 31px;
+      height: 31px;
+      border: 3px solid #2b2624;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #1e1c1b 0 38%, #f6c3cf 39% 62%, #ffffff 63%);
+    }
+
+    .birdCheek {
+      position: absolute;
+      left: 25px;
+      top: 17px;
+      width: 11px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #2b2624;
+    }
+
+    .birdEye {
+      position: absolute;
+      top: 13px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #111;
+    }
+
+    .birdEyeL { left: 24px; }
+    .birdEyeR { left: 31px; }
+
+    .birdBeak {
+      position: absolute;
+      left: 42px;
+      top: 19px;
+      width: 0;
+      height: 0;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 11px solid #f06b4f;
+      filter: drop-shadow(1px 0 0 #2b2624);
+    }
+
+    .birdTail {
+      position: absolute;
+      left: 5px;
+      top: 31px;
+      width: 17px;
+      height: 10px;
+      background: #1e1c1b;
+      border: 3px solid #2b2624;
+      border-radius: 8px 0 0 8px;
+      transform: rotate(-18deg);
+    }
+
+    .birdLeg {
+      position: absolute;
+      bottom: 5px;
+      width: 10px;
+      height: 9px;
+      border-bottom: 3px solid #a85c35;
+      border-left: 2px solid #a85c35;
+      border-radius: 0 0 0 5px;
+    }
+
+    .legA { left: 22px; }
+    .legB { left: 35px; }
+
+    .painEye,
+    .painMouth {
+      display: none;
+      position: absolute;
+      z-index: 7;
+    }
+
+    .painEye {
+      top: 8px;
+      font-size: 14px;
+      font-weight: 900;
+      color: #111;
+      line-height: 1;
+    }
+
+    .painEyeL { left: 20px; }
+    .painEyeR { left: 30px; }
+
+    .painMouth {
+      left: 24px;
+      top: 22px;
+      width: 12px;
+      height: 7px;
+      border: 2px solid #111;
+      border-color: transparent transparent #111 transparent;
+      border-radius: 0 0 12px 12px;
+    }
+
+    .spark {
+      position: absolute;
+      font-size: 18px;
+      font-weight: 900;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 8;
+      filter: drop-shadow(0 0 4px rgba(255, 255, 120, 0.95));
+    }
+
+    .spark1 { left: -4px; top: 8px; }
+    .spark2 { left: 41px; top: 3px; }
+    .spark3 { left: 44px; top: 31px; }
+    .spark4 { left: 2px; top: 36px; }
+
+    .faceLeft #birdInner {
+      transform: scaleX(-1);
+    }
+
+    .hop #birdInner {
+      animation: hop 360ms ease-in-out infinite;
+    }
+
+    .hurt .birdEye {
+      display: none;
+    }
+
+    .hurt .painEye,
+    .hurt .painMouth {
+      display: block;
+    }
+
+    .hurt #birdInner {
+      animation: hurtShake 0.11s linear infinite !important;
+    }
+
+    .hurt .spark1 { animation: sparkFlash 0.32s ease-in-out infinite; }
+    .hurt .spark2 { animation: sparkFlash 0.32s ease-in-out infinite 0.08s; }
+    .hurt .spark3 { animation: sparkFlash 0.32s ease-in-out infinite 0.16s; }
+    .hurt .spark4 { animation: sparkFlash 0.32s ease-in-out infinite 0.24s; }
+
+    .happy #birdInner {
+      animation: happyBounce 0.24s ease-in-out infinite !important;
+    }
+
+    .happy .birdCheek {
+      background: #fff8fb;
+      box-shadow: 0 0 0 3px rgba(233, 111, 146, 0.18);
+    }
+
+    @keyframes hop {
+      0%, 100% { translate: 0 0; rotate: -2deg; }
+      45% { translate: 0 -14px; rotate: 5deg; }
+      70% { translate: 0 2px; rotate: -4deg; }
+    }
+
+    @keyframes hurtShake {
+      0%   { translate: 0 0; rotate: -4deg; }
+      25%  { translate: -2px 1px; rotate: 3deg; }
+      50%  { translate: 2px -1px; rotate: -5deg; }
+      75%  { translate: -1px -2px; rotate: 4deg; }
+      100% { translate: 0 0; rotate: -4deg; }
+    }
+
+    @keyframes sparkFlash {
+      0%   { opacity: 0; transform: scale(0.5) rotate(0deg); }
+      35%  { opacity: 1; transform: scale(1.15) rotate(-10deg); }
+      70%  { opacity: 0.9; transform: scale(0.95) rotate(12deg); }
+      100% { opacity: 0; transform: scale(0.45) rotate(0deg); }
+    }
+
+    @keyframes happyBounce {
+      0%, 100% { translate: 0 0; rotate: -3deg; }
+      45% { translate: 0 -17px; rotate: 7deg; }
+      70% { translate: 0 1px; rotate: -6deg; }
+    }
+
+    .scoreText {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      font-weight: 900;
+      font-size: 24px;
+      text-shadow: 0 2px 0 rgba(255,255,255,0.8);
+      pointer-events: none;
+      z-index: 10;
+      animation: floatScore 720ms ease-out forwards;
+    }
+
+    @keyframes floatScore {
+      from { opacity: 1; translate: 0 0; scale: 1; }
+      to { opacity: 0; translate: 0 -34px; scale: 1.15; }
+    }
+
+    #overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: rgba(255, 249, 240, 0.72);
+      backdrop-filter: blur(4px);
+      z-index: 20;
+    }
+
+    .card {
+      width: min(92%, 390px);
+      border: 3px solid #5a3a2e;
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: 0 8px 0 rgba(90, 58, 46, 0.22);
+      padding: 22px;
+      text-align: center;
+    }
+
+    .title {
+      font-size: clamp(26px, 7vw, 36px);
+      font-weight: 900;
+      line-height: 1.12;
+      margin: 0 0 10px;
+      color: #533024;
+    }
+
+    .desc {
+      margin: 8px 0 16px;
+      font-size: 15px;
+      line-height: 1.65;
+      text-align: left;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 14px 0 18px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .legend div {
+      border-radius: 14px;
+      padding: 9px 6px;
+      background: #fff0df;
+      border: 2px solid rgba(90,58,46,0.25);
+    }
+
+    button {
+      appearance: none;
+      border: 3px solid #5a3a2e;
+      border-radius: 999px;
+      padding: 12px 24px;
+      background: linear-gradient(#ff9fbd, #e96f92);
+      color: #fff;
+      font-weight: 900;
+      font-size: 18px;
+      box-shadow: 0 5px 0 #9b425a;
+      cursor: pointer;
+    }
+
+    button:active {
+      translate: 0 4px;
+      box-shadow: 0 1px 0 #9b425a;
+    }
+
+    .timeupMessage {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 18;
+      pointer-events: none;
+      background: rgba(255, 249, 240, 0.28);
+    }
+
+    .timeupMessage span {
+      display: inline-block;
+      padding: 18px 28px;
+      border: 4px solid #5a3a2e;
+      border-radius: 24px;
+      background: #fffdf8;
+      color: #e96f92;
+      font-size: clamp(44px, 13vw, 86px);
+      font-weight: 1000;
+      line-height: 1;
+      text-shadow: 0 4px 0 rgba(90, 58, 46, 0.14);
+      box-shadow: 0 8px 0 rgba(90, 58, 46, 0.22);
+      animation: timeupPop 360ms cubic-bezier(.2, 1.5, .35, 1) both;
+    }
+
+    @keyframes timeupPop {
+      from { scale: 0.55; opacity: 0; rotate: -8deg; }
+      to { scale: 1; opacity: 1; rotate: 0deg; }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (min-aspect-ratio: 1/1) {
+      #shell {
+        width: min(100vw, 920px);
+        height: min(100vh, 620px);
+        max-width: none;
+        max-height: none;
+      }
+
+      #hud {
+        height: 62px;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hudBlock:last-child {
+        grid-column: auto;
+      }
+
+      #bird {
+        width: 62px;
+        height: 62px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main id="shell" aria-label="Ç†Ç∏Ç´ÇÃÇ®Ç‚Ç¬ÉpÉgÉçÅ[Éã">
+    <section id="hud">
+      <div class="hudBlock">
+        <span class="hudLabel">SCORE</span>
+        <div class="scoreRow">
+          <span id="score" class="hudValue">0</span>
+          <span id="streakBadge">òAë± 0 å¬ÅI</span>
+        </div>
+      </div>
+      <div class="hudBlock">
+        <span class="hudLabel">TIME</span>
+        <span id="time" class="hudValue">60.0</span>
+      </div>
+    </section>
+
+    <section id="game">
+      <div id="bird" class="hop" aria-hidden="true">
+        <div id="birdInner">
+          <div class="spark spark1">°&</div>
+          <div class="spark spark2">°&</div>
+          <div class="spark spark3">°&</div>
+          <div class="spark spark4">°&</div>
+
+          <div class="birdTail"></div>
+          <div class="birdBody"></div>
+          <div class="birdHead"></div>
+          <div class="birdCheek"></div>
+          <div class="birdEye birdEyeL"></div>
+          <div class="birdEye birdEyeR"></div>
+          <div class="painEye painEyeL">Å~</div>
+          <div class="painEye painEyeR">Å~</div>
+          <div class="painMouth"></div>
+          <div class="birdBeak"></div>
+          <div class="birdLeg legA"></div>
+          <div class="birdLeg legB"></div>
+        </div>
+      </div>
+
+      <div id="overlay">
+        <div class="card">
+          <h1 class="title">Ç†Ç∏Ç´ÇÃ<br>Ç®Ç‚Ç¬ÉpÉgÉçÅ[Éã</h1>
+          <p class="desc">
+            ç˜ï∂íπÇÃÇ†Ç∏Ç´ÇÕÅAãﬂÇ≠ÇÃêHÇ◊ï®Ç÷èüéËÇ…å¸Ç©Ç¡ÇƒÇ¢Ç´Ç‹Ç∑ÅB<br>
+            Ç®Ç¢ÇµÇ¢Ç‡ÇÃÇÕêHÇ◊Ç≥ÇπÇƒÅAÇ‹Ç∏Ç¢Ç‡ÇÃÇÕÉ^ÉbÉvÇ‹ÇΩÇÕÉNÉäÉbÉNÇ≈è¡ÇµÇƒÇ≠ÇæÇ≥Ç¢ÅBêßå¿éûä‘ÇÕ60ïbÇ≈Ç∑ÅB
+          </p>
+          <div class="legend">
+            <div><strong>Ç®Ç¢ÇµÇ¢Ç‡ÇÃ</strong><br><ÿSﬂ <ÿZﬂ <ÿ=ﬂ<br>êHÇ◊ÇÈÇ∆ +100<br>òAë±Ç≈É{Å[ÉiÉX</div>
+            <div><strong>Ç‹Ç∏Ç¢Ç‡ÇÃ</strong><br><ÿ6ﬂ˛ >ÿ≈› <ÿKﬂ<br>êHÇ◊ÇÈÇ∆ÉXÉRÉAÇÃ -3%<br>è¡Ç∑Ç∆ +1</div>
+          </div>
+          <button id="startBtn">ÉXÉ^Å[Ég</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const game = document.getElementById('game');
+      const bird = document.getElementById('bird');
+      const overlay = document.getElementById('overlay');
+      const startBtn = document.getElementById('startBtn');
+      const scoreEl = document.getElementById('score');
+      const timeEl = document.getElementById('time');
+      const streakBadge = document.getElementById('streakBadge');
+
+      const goodFoods = [
+        { icon: '<ÿSﬂ', name: 'Ç¢ÇøÇ≤', point: 10 },
+        { icon: '<ÿZﬂ', name: 'Ç≤ÇÕÇÒ', point: 10 },
+        { icon: '<ÿ=ﬂ', name: 'Ç∆Ç§Ç‡ÇÎÇ±Çµ', point: 10 },
+        { icon: '<ÿNﬂ', name: 'ÇËÇÒÇ≤', point: 10 }
+      ];
+
+      const badFoods = [
+        { icon: '<ÿ6ﬂ˛', name: 'Ç©ÇÁÇ¢é¿', point: 0 },
+        { icon: '>ÿ≈›', name: 'ÇΩÇ‹ÇÀÇ¨', point: 0 },
+        { icon: '<ÿKﬂ', name: 'Ç∑Ç¡ÇœÇ∑Ç¨ÇÈé¿', point: 0 }
+      ];
+
+      const state = {
+        running: false,
+        resolving: false,
+        score: 0,
+        timeLeft: 60,
+        elapsed: 0,
+        lastTime: 0,
+        birdX: 180,
+        birdY: 300,
+        target: null,
+        foods: [],
+        spawnTimer: 0,
+        gameW: 0,
+        gameH: 0,
+        baseSpeed: 82,
+        stunLeft: 0,
+        happyLeft: 0,
+        goodStreak: 0
+      };
+
+      const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+      const rand = (min, max) => min + Math.random() * (max - min);
+      const dist = (a, b, c, d) => Math.hypot(a - c, b - d);
+
+      function getGroundTop() {
+        return state.gameH * 0.16;
+      }
+
+      function updateSize() {
+        const rect = game.getBoundingClientRect();
+        state.gameW = rect.width;
+        state.gameH = rect.height;
+        state.birdX = clamp(state.birdX, 34, state.gameW - 34);
+        state.birdY = clamp(state.birdY, 42, state.gameH - 34);
+      }
+
+      function placeBird() {
+        bird.style.left = `${state.birdX}px`;
+        bird.style.top = `${state.birdY}px`;
+      }
+
+      function chooseFood() {
+        const elapsedRate = clamp(state.elapsed / 50, 0, 1);
+        const startBadRate = 0.30;
+        const badRate = startBadRate * (1 + elapsedRate);
+        const isGood = Math.random() >= badRate;
+        const list = isGood ? goodFoods : badFoods;
+        const base = list[Math.floor(Math.random() * list.length)];
+        return { ...base, good: isGood };
+      }
+
+      function chooseSpawnCount() {
+        const rate = clamp(state.elapsed / 50, 0, 1);
+        const oneRate = 0.70 - 0.20 * rate;
+        const twoRate = 0.20 + 0.10 * rate;
+        const r = Math.random();
+        if (r < oneRate) return 1;
+        if (r < oneRate + twoRate) return 2;
+        return 3;
+      }
+
+      function spawnFood() {
+        if (!state.running || state.foods.length >= 50) return;
+
+        const food = chooseFood();
+        const el = document.createElement('div');
+        el.className = 'food';
+        el.textContent = food.icon;
+        el.title = `${food.name} ${food.point > 0 ? '+' : ''}${food.point}`;
+
+        const margin = 34;
+        const groundTop = getGroundTop();
+        const spawnTop = groundTop + 18;
+        let x = rand(margin, state.gameW - margin);
+        let y = rand(spawnTop, state.gameH - margin);
+
+        const elapsedRate = clamp(state.elapsed / 50, 0, 1);
+        const nearBadRate = 0.20 + elapsedRate * 0.55;
+        if (!food.good && Math.random() < nearBadRate) {
+          const angle = rand(0, Math.PI * 2);
+          const minSafeDistance = Math.max(115, Math.min(150, state.gameW * 0.22));
+          const maxNearDistance = Math.max(minSafeDistance + 35, Math.min(230, state.gameW * 0.38));
+          const radius = rand(minSafeDistance, maxNearDistance);
+          x = clamp(state.birdX + Math.cos(angle) * radius, margin, state.gameW - margin);
+          y = clamp(state.birdY + Math.sin(angle) * radius, spawnTop, state.gameH - margin);
+        }
+
+        for (let i = 0; i < 12; i++) {
+          const tooCloseToBird = dist(x, y, state.birdX, state.birdY) < (food.good ? 95 : Math.max(115, Math.min(150, state.gameW * 0.22)));
+          const tooCloseToFood = state.foods.some(f => dist(x, y, f.x, f.y) < 52);
+          if (!tooCloseToBird && !tooCloseToFood) break;
+          x = rand(margin, state.gameW - margin);
+          y = rand(spawnTop, state.gameH - margin);
+        }
+
+        const item = {
+          id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+          x,
+          y,
+          point: food.point,
+          name: food.name,
+          icon: food.icon,
+          good: food.good,
+          consumed: false,
+          el
+        };
+
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+
+        el.addEventListener('pointerdown', (event) => {
+          event.preventDefault();
+          if (!state.running) return;
+
+          const removed = removeFood(item, false);
+          if (!removed) return;
+          showBashEffect(item.x, item.y);
+
+          if (item.good) {
+            showFloatingText(item.x, item.y, '0', '#5a3a2e');
+          } else {
+            state.score += 1;
+            scoreEl.textContent = String(state.score);
+            showFloatingText(item.x, item.y, '+1', 'var(--good)');
+          }
+        }, { passive: false });
+
+        game.appendChild(el);
+        state.foods.push(item);
+        showSpawnSparkle(x, y);
+      }
+
+      function removeFood(item, eaten) {
+        if (!item || item.consumed) return false;
+        item.consumed = true;
+        item.el.style.pointerEvents = 'none';
+        if (eaten) showEatPoof(item.x, item.y);
+
+        const index = state.foods.indexOf(item);
+        if (index !== -1) state.foods.splice(index, 1);
+        if (state.target === item) state.target = null;
+        item.el.classList.add('pop');
+        window.setTimeout(() => item.el.remove(), 130);
+
+        if (!eaten) return true;
+
+        let earnedPoint = 0;
+        if (item.good) {
+          const bonusPoint = Math.min(state.goodStreak, 10);
+          earnedPoint = 10 + bonusPoint;
+          state.goodStreak += 1;
+          updateStreakBadge(true);
+        } else {
+          const penalty = Math.max(1, Math.round(state.score * 0.03));
+          earnedPoint = -penalty;
+          state.goodStreak = 0;
+          updateStreakBadge(false);
+        }
+
+        state.score = Math.max(0, state.score + earnedPoint);
+        scoreEl.textContent = String(state.score);
+        showFloatingText(
+          item.x,
+          item.y,
+          `${earnedPoint > 0 ? '+' : ''}${earnedPoint}`,
+          earnedPoint > 0 ? 'var(--good)' : 'var(--bad)'
+        );
+
+        if (!item.good) {
+          triggerShockStun();
+        } else {
+          showHappyHeart();
+          triggerHappyBounce();
+        }
+
+        return true;
+      }
+
+      function addEffect(className, x, y, lifetime = 600) {
+        const el = document.createElement('div');
+        el.className = `effect ${className}`;
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+        game.appendChild(el);
+        window.setTimeout(() => el.remove(), lifetime);
+        return el;
+      }
+
+      function showSpawnSparkle(x, y) {
+        addEffect('spawnSparkle', x, y, 560);
+      }
+
+      function showEatPoof(x, y) {
+        addEffect('eatPoof', x, y, 560);
+      }
+
+      function showHappyHeart() {
+        addEffect('happyHeart', state.birdX + 2, state.birdY - 39, 900);
+      }
+
+      function showBashEffect(x, y) {
+        const el = addEffect('bashEffect', x, y, 380);
+        el.innerHTML = '<i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>';
+      }
+
+      function updateStreakBadge(animate = false) {
+        streakBadge.textContent = `òAë± ${state.goodStreak} å¬ÅI`;
+        if (animate) {
+          streakBadge.classList.remove('popStreak');
+          void streakBadge.offsetWidth;
+          streakBadge.classList.add('popStreak');
+        }
+      }
+
+      function showFloatingText(x, y, text, color) {
+        const el = document.createElement('div');
+        el.className = 'scoreText';
+        el.textContent = text;
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+        el.style.color = color;
+        game.appendChild(el);
+        window.setTimeout(() => el.remove(), 760);
+      }
+
+      function clearHurtState() {
+        state.stunLeft = 0;
+        bird.classList.remove('hurt');
+        if (state.happyLeft <= 0) bird.classList.add('hop');
+      }
+
+      function clearHappyState() {
+        state.happyLeft = 0;
+        bird.classList.remove('happy');
+        if (state.stunLeft <= 0) bird.classList.add('hop');
+      }
+
+      function triggerShockStun() {
+        clearHappyState();
+        state.stunLeft = 1.0;
+        state.target = null;
+        bird.classList.remove('hop');
+        bird.classList.add('hurt');
+      }
+
+      function triggerHappyBounce() {
+        state.happyLeft = 0.5;
+        state.target = null;
+        bird.classList.remove('hop');
+        bird.classList.add('happy');
+      }
+
+      function findNearestFood() {
+        if (state.foods.length === 0) return null;
+        let best = null;
+        let bestD = Infinity;
+        for (const food of state.foods) {
+          const d = dist(state.birdX, state.birdY, food.x, food.y);
+          if (d < bestD) {
+            best = food;
+            bestD = d;
+          }
+        }
+        return best;
+      }
+
+      function moveBird(dt) {
+        if (state.happyLeft > 0) {
+          state.happyLeft -= dt;
+          if (state.happyLeft <= 0) clearHappyState();
+          return;
+        }
+
+        if (state.stunLeft > 0) {
+          state.stunLeft -= dt;
+          if (state.stunLeft <= 0) clearHurtState();
+          return;
+        }
+
+        if (!state.target || !state.foods.includes(state.target)) {
+          state.target = findNearestFood();
+        }
+
+        if (!state.target) return;
+
+        const dx = state.target.x - state.birdX;
+        const dy = state.target.y - state.birdY;
+        const distance = Math.hypot(dx, dy);
+
+        if (dx < -1) bird.classList.add('faceLeft');
+        if (dx > 1) bird.classList.remove('faceLeft');
+
+        if (distance < 25) {
+          removeFood(state.target, true);
+          state.target = null;
+          return;
+        }
+
+        const secondsPassed = Math.min(50, Math.floor(state.elapsed));
+        const speedMultiplier = Math.pow(1.02, secondsPassed);
+        const currentSpeed = state.baseSpeed * speedMultiplier;
+        const step = Math.min(distance, currentSpeed * dt);
+        state.birdX += (dx / distance) * step;
+        state.birdY += (dy / distance) * step;
+        placeBird();
+      }
+
+      function clearFoods() {
+        for (const food of state.foods) food.el.remove();
+        state.foods.length = 0;
+        state.target = null;
+        document.querySelectorAll('.scoreText').forEach(el => el.remove());
+        document.querySelectorAll('.effect').forEach(el => el.remove());
+        document.querySelectorAll('.timeupMessage').forEach(el => el.remove());
+      }
+
+      function startGame() {
+        updateSize();
+        clearFoods();
+        clearHappyState();
+        clearHurtState();
+
+        state.running = true;
+        state.resolving = false;
+        state.score = 0;
+        state.goodStreak = 0;
+        state.timeLeft = 60;
+        state.elapsed = 0;
+        state.lastTime = performance.now();
+        state.spawnTimer = 0;
+        state.birdX = state.gameW / 2;
+        state.birdY = state.gameH * 0.58;
+        state.baseSpeed = Math.max(74, Math.min(99, state.gameW * 0.1764));
+
+        scoreEl.textContent = '0';
+        timeEl.textContent = '60.0';
+        updateStreakBadge(false);
+        overlay.classList.add('hidden');
+        placeBird();
+
+        for (let i = 0; i < 8; i++) spawnFood();
+        requestAnimationFrame(loop);
+      }
+
+      function showResultScreen() {
+        clearHappyState();
+        clearHurtState();
+        state.running = false;
+        bird.classList.remove('faceLeft');
+        overlay.innerHTML = `
+          <div class="card">
+            <h1 class="title">ÉQÅ[ÉÄèIóπ</h1>
+            <p class="desc" style="text-align:center; font-size:18px;">
+              ç≈èIÉXÉRÉA<br>
+              <strong style="font-size:48px; color:#e96f92;">${state.score}</strong>
+            </p>
+            <p class="desc">
+              Ç®Ç¢ÇµÇ¢Ç‡ÇÃÇÕòAë±Ç≈êHÇ◊ÇÈÇŸÇ« +10ÅA+11ÅA+12Åc Ç∆ìæì_Ç™êLÇ—ÅAç≈ëÂ +20 ì_Ç≈Ç∑ÅBÇ‹Ç∏Ç¢Ç‡ÇÃÇêHÇ◊ÇÈÇ∆ÅAÇªÇÃéûì_ÇÃÉXÉRÉAÇÃ3%Ç™å∏ì_Ç≥ÇÍÅAòAë±É{Å[ÉiÉXÇÕÉäÉZÉbÉgÇ≥ÇÍÇ‹Ç∑ÅBÉXÉRÉAÇÕ0ì_ñ¢ñûÇ…ÇÕÇ»ÇËÇ‹ÇπÇÒÅB
+            </p>
+            <button id="restartBtn">Ç‡Ç§àÍìx</button>
+          </div>
+        `;
+        overlay.classList.remove('hidden');
+        document.getElementById('restartBtn').addEventListener('click', startGame);
+      }
+
+      function beginTimeUpSequence() {
+        if (state.resolving) return;
+        state.resolving = true;
+        state.running = false;
+        state.target = null;
+        clearHappyState();
+        clearHurtState();
+        bird.classList.remove('hop');
+
+        const message = document.createElement('div');
+        message.className = 'timeupMessage';
+        message.innerHTML = '<span>ÇªÇ±Ç‹Ç≈ÅI</span>';
+        game.appendChild(message);
+
+        window.setTimeout(() => {
+          message.remove();
+          showResultScreen();
+        }, 2000);
+      }
+
+      function loop(now) {
+        if (!state.running) return;
+
+        const dt = Math.min(0.04, (now - state.lastTime) / 1000);
+        state.lastTime = now;
+
+        state.timeLeft -= dt;
+        state.elapsed += dt;
+
+        if (state.timeLeft <= 0) {
+          state.timeLeft = 0;
+          timeEl.textContent = '0.0';
+          beginTimeUpSequence();
+          return;
+        }
+
+        state.spawnTimer -= dt;
+        if (state.spawnTimer <= 0) {
+          const spawnCount = chooseSpawnCount();
+          for (let i = 0; i < spawnCount; i++) {
+            spawnFood();
+          }
+          const spawnSpeedRate = clamp(state.elapsed / 50, 0, 1);
+          const spawnIntervalMultiplier = 1 - spawnSpeedRate * 0.5;
+          state.spawnTimer = rand(0.75, 1.15) * spawnIntervalMultiplier * 1.12;
+        }
+
+        moveBird(dt);
+        timeEl.textContent = state.timeLeft.toFixed(1);
+        requestAnimationFrame(loop);
+      }
+
+      function runSelfTests() {
+        console.assert(typeof moveBird === 'function', 'moveBird should exist');
+        console.assert(typeof findNearestFood === 'function', 'findNearestFood should exist');
+        console.assert(typeof chooseSpawnCount === 'function', 'chooseSpawnCount should exist');
+        const originalElapsed = state.elapsed;
+        state.elapsed = 50;
+        const rateAtCap = clamp(state.elapsed / 50, 0, 1);
+        console.assert(0.70 - 0.20 * rateAtCap === 0.50, 'one-food spawn rate should be 50% at 50 seconds');
+        console.assert(0.20 + 0.10 * rateAtCap === 0.30, 'two-food spawn rate should be 30% at 50 seconds');
+        state.foods = new Array(50).fill({});
+        console.assert(state.foods.length >= 50, 'food cap should be 50');
+        state.foods = [];
+        state.elapsed = originalElapsed;
+        console.assert(typeof getGroundTop === 'function', 'getGroundTop should exist');
+        console.assert(document.getElementById('streakBadge'), 'streak badge should exist');
+        console.assert(!document.getElementById('target'), 'TARGET display should be removed');
+        console.assert(typeof window.targetEl === 'undefined', 'global targetEl should not be required');
+        console.assert(Math.min(15, 10) === 10, 'bonus cap calculation should cap at 10');
+        console.assert(clamp(55 / 50, 0, 1) === 1, 'difficulty should cap at 50 seconds');
+        console.assert(1.12 > 1, 'spawn interval multiplier should make food appear at half the previous speed');
+        const originalGameH = state.gameH;
+        state.gameH = 1000;
+        console.assert(getGroundTop() === 160, 'ground top should start at 16% of field height');
+        state.gameH = originalGameH;
+      }
+
+      startBtn.addEventListener('click', startGame);
+      window.addEventListener('resize', () => {
+        updateSize();
+        placeBird();
+      });
+
+      updateSize();
+      placeBird();
+      runSelfTests();
+    })();
+  </script>
+</body>
+</html>
